@@ -1,0 +1,16 @@
+workflows:
+  android-workflow:
+    name: Build Android APK
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+    scripts:
+      - name: Extract zip
+        script: |
+          unzip -o download.zip
+      - name: Build APK
+        script: |
+          npm install
+          npx cap build android || npm run build
+    artifacts:
+      - build/**/outputs/**/*.apk
+      - "*.apk"
