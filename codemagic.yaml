@@ -4,16 +4,19 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m1
     scripts:
-      - name: Extract zip
+      - name: Extract zip and move files
         script: |
           unzip -o download.zip
-      - name: Build Android APK File
+          # ফোল্ডারের ভেতরে ফাইল থাকলে সেগুলোকে মেইন ডিরেক্টরিতে আনবে
+          find . -mindepth 2 -type f -exec mv {} . \; || true
+      - name: Build Android App
         script: |
           if [ -d "android" ]; then
             cd android && ./gradlew assembleDebug
           elif [ -f "package.json" ]; then
             npm install && npm run build || true
+          else
+            echo "No buildable files found in root"
           fi
     artifacts:
-      - android/app/build/outputs/**/*.apk
       - "**/*.apk"
