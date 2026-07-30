@@ -4,17 +4,15 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m1
     scripts:
-      - name: Extract zip file
+      - name: Extract zip
         script: |
           unzip -o download.zip
-      - name: Build Android App
+      - name: Build Android APK File
         script: |
-          if [ -f "package.json" ]; then
-            npm install
-            npm run build || true
-          fi
           if [ -d "android" ]; then
             cd android && ./gradlew assembleDebug
+          elif [ -f "package.json" ]; then
+            npm install && npm run build || true
           fi
     artifacts:
       - android/app/build/outputs/**/*.apk
